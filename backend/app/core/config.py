@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     
     # Database Configuration
-    MONGODB_URL: str = "mongodb://localhost:27017/ai_analyst_db"
+    MONGODB_URL: str = "mongodb+srv://23eg111a39_db_user:I0tt7m1RMDjL2LC2@cluster0.t05kbu7.mongodb.net/?appName=Cluster0"
     
     # JWT & Auth
     JWT_SECRET: str = "super_secret_jwt_encryption_key_for_production_analyst_agent"
