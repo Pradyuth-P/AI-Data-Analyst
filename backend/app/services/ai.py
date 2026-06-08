@@ -47,12 +47,51 @@ class AIService:
         provider = self._get_provider(provider)
         
         if provider == "openai":
-            return self._call_openai(prompt, system_instruction)
+            try:
+                return self._call_openai(prompt, system_instruction)
+            except Exception as e:
+                if self.groq_key:
+                    print(f"[Warning] OpenAI completion failed ({e}). Falling back to Groq...")
+                    try:
+                        return self._call_groq(prompt, system_instruction)
+                    except Exception:
+                        pass
+                if self.gemini_key:
+                    print(f"[Warning] OpenAI completion failed ({e}). Falling back to Gemini...")
+                    return self._call_gemini(prompt, system_instruction)
+                raise e
         elif provider == "groq":
-            return self._call_groq(prompt, system_instruction)
+            try:
+                return self._call_groq(prompt, system_instruction)
+            except Exception as e:
+                if self.gemini_key:
+                    print(f"[Warning] Groq completion failed ({e}). Falling back to Gemini...")
+                    try:
+                        return self._call_gemini(prompt, system_instruction)
+                    except Exception:
+                        pass
+                if self.openai_key:
+                    print(f"[Warning] Groq completion failed ({e}). Falling back to OpenAI...")
+                    return self._call_openai(prompt, system_instruction)
+                raise e
         else:
             # Default is Gemini
-            return self._call_gemini(prompt, system_instruction)
+            try:
+                return self._call_gemini(prompt, system_instruction)
+            except Exception as e:
+                if self.groq_key:
+                    print(f"[Warning] Gemini completion failed ({e}). Falling back to Groq...")
+                    try:
+                        return self._call_groq(prompt, system_instruction)
+                    except Exception as groq_err:
+                        print(f"[Error] Groq fallback also failed: {groq_err}")
+                if self.openai_key:
+                    print(f"[Warning] Gemini completion failed ({e}). Falling back to OpenAI...")
+                    try:
+                        return self._call_openai(prompt, system_instruction)
+                    except Exception as openai_err:
+                        print(f"[Error] OpenAI fallback also failed: {openai_err}")
+                raise e
 
     def generate_json(
         self, 
@@ -126,7 +165,7 @@ class AIService:
         messages.append({"role": "user", "content": prompt})
         
         response = client.chat.completions.create(
-            model="mixtral-8x7b-32768",
+            model="llama-3.3-70b-versatile",
             messages=messages,
             temperature=0.2
         )
