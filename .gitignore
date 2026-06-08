@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+venv/
+env/
+.venv/
+
+# Build folders
+dist/
+build/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Credentials & environment configuration
+.env
+.env.local
+.env.*.local
+
+# Storage and media uploads
+backend/storage/raw/*
+backend/storage/temp/*
+backend/storage/temp_report.pdf
+storage/raw/
+storage/temp/
+
+# Editor/OS settings
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
