@@ -76,3 +76,9 @@ async def health_check(db = Depends(get_db)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Database connection degraded: {e}"
         )
+@app.get("/")
+async def root():
+    return {
+        "status": "healthy",
+        "message": "AI Data Analyst API is running"
+    }
